@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "expression.hpp"
+
 namespace cut_cut_cut
 {
 	enum item_type : uint_least64_t
@@ -52,11 +54,10 @@ namespace cut_cut_cut
 
 int main()
 {
-	cut_cut_cut::convert_union hoge;
+	cut_cut_cut::expression hoge;
 
-	hoge._item_type = cut_cut_cut::item_type::function;
-
-	std::cout << hoge._integer << std::endl;
+	hoge.define_variable({"@a" , "$b" , "%c"});
+	hoge.define_body("@hoge 1 10 -11.2 al \\i9i9");
 
 	return 0;
 }

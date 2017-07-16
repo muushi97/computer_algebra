@@ -16,6 +16,9 @@ $(OBJDIRS)/%.o: $(SRCDIR)/%.cpp
 
 $(OBJDIRS)/%.o: $(INCLUDE)/%.hpp
 
+run: $(TARGETS)
+	$(TARGETDIR)$(TARGETS)
+
 all: clear $(TARGETS)
 
 clear:

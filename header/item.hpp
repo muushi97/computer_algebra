@@ -15,9 +15,9 @@ namespace
 	};
 }
 
-namespace hoge
+namespace cut_cut_cut
 {
-	enum type_type
+	enum item_type
 	{
 		no,
 		constant,
@@ -33,7 +33,10 @@ namespace hoge
 	public:
 		// コンストラクタ
 		item(type_type type);
-	}
+
+		// 参照
+
+	};
 }
 
 #endif
