@@ -9,10 +9,10 @@ SOURCES   = $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS   = $(subst $(SRCDIR),$(OBJDIRS), $(SOURCES:.cpp=.o))
 
 $(TARGETS): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o $(TARGETDIR)$@ $^
+	$(CXX) -o $(TARGETDIR)$@ $^ $(CXXFLAGS)
 
 $(OBJDIRS)/%.o: $(SRCDIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ -c $<
+	$(CXX) -o $@ -c $< $(CXXFLAGS) $(INCLUDE)
 
 $(OBJDIRS)/%.o: $(INCLUDE)/%.hpp
 

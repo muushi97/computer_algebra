@@ -57,7 +57,7 @@ int main()
 	cut_cut_cut::expression hoge;
 
 	hoge.define_variable({"@a" , "$b" , "%c"});
-	hoge.define_body("@hoge 1 10 -11.2 al \\i9i9");
+	hoge.define_body("3.2i8 +11j-98");
 
 	return 0;
 }
