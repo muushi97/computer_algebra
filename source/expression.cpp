@@ -182,9 +182,8 @@ bool expression::define_body(std::string body)
 							return false;
 					}
 				}
-				std::cout << static_cast<int>(term_type::fun) << " ";
-				std::cout << static_cast<int>(to_functionID(std::string(itr + 1, itr2 + 1))) << " ";
-				std::cout << static_cast<int>(to_function_term_of_number(std::string(itr + 1, itr2 + 1))) << " ";
+				m_body.emplace_back(itr, itr2 + 1);
+				std::cout << "func : " << m_body.back();
 				std::cout << std::endl;
 				itr = itr2;
 				continue;
@@ -207,10 +206,9 @@ bool expression::define_body(std::string body)
 							return false;
 					}
 				}
-				std::cout << static_cast<int>(term_type::var) << " ";
-				std::cout << static_cast<int>(to_variable_index(std::string(itr, itr2 + 1))) << " ";
+				m_body.emplace_back(itr, itr2 + 1);
+				std::cout << "var : " << m_body.back();
 				std::cout << std::endl;
-
 				itr = itr2;
 				continue;
 			}
@@ -223,29 +221,17 @@ bool expression::define_body(std::string body)
 			{
 				if (*(itr2 + 1) == ' ')
 				{
-					if (*(itr2 + 1) != *itr)
+					if (*(itr2) != *itr)
 						break;
 					else
 						return false;
 				}
-				else if (*(itr2 + 1) == 'i' || *(itr2 + 1) == 'j')
-				{
-					std::cout << static_cast<int>(term_type::con) << " ";
-					std::cout << to_decimal(std::string(itr, itr2 + 1)) << " ";
-					conv.decimal = to_decimal(std::string(itr, itr2 + 1));
-					std::cout << conv.integer << " ";
-					for (unsigned int i = 0; i < 8; ++i)
-						std::cout << static_cast<int>(integer_devide(conv.integer)) << " ";
-					itr = itr2 + 2;
-				}
 			}
-			std::cout << to_decimal(std::string(itr, itr2 + 1)) << " ";
-			conv.decimal = to_decimal(std::string(itr, itr2 + 1));
-			std::cout << conv.integer << " ";
-			for (unsigned int i = 0; i < 8; ++i)
-				std::cout << static_cast<int>(integer_devide(conv.integer)) << " ";
+			m_body.emplace_back(itr, itr2 + 1);
+			std::cout << "cons : " << m_body.back();
 			std::cout << std::endl;
 			itr = itr2;
+			continue;
 		}
 	}
 	return true;

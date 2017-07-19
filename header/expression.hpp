@@ -10,10 +10,11 @@ namespace cut_cut_cut
 {
 	class expression
 	{
+		friend class calculator;
+
 	private:
 		std::vector<std::string> m_variable_list;						// 変数リスト
-		std::vector<unsigned char> m_body;								// 式本体
-		std::list<std::string> m_body_temp;								// 式本体
+		std::list<std::string> m_body;									// 式本体
 
 		// 変数を探す
 		short find_variable(std::string variable_name);

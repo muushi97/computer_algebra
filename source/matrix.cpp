@@ -17,7 +17,7 @@ matrix::matrix(unsigned int row, unsigned int column)
 }
 
 // 行数を変更
-void matrix::change_row(unsigned int row);
+void matrix::change_row(unsigned int row)
 {
 	m_row = row;
 	update_array();
@@ -38,7 +38,7 @@ void matrix::change_size(unsigned int row, unsigned int column)
 
 // 値を参照する
 // 列数 * row + column
-std::complex &matrix::operator () (unsigned int row, unsigned int column)
+std::complex<double> &matrix::operator () (unsigned int row, unsigned int column)
 {
 	return m_value[m_row * row + column];
 }
