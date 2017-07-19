@@ -250,3 +250,14 @@ bool expression::define_body(std::string body)
 	}
 	return true;
 }
+
+// 定義されている変数の数を返す
+unsigned int expression::variable_size() const
+{
+	return m_variable_list.size();
+}
+// インデックス index の変数名を返す (変数識別子含む)
+const std::string &expression::variable(unsigned int index) const
+{
+	return m_variable_list[index];
+}

@@ -36,6 +36,11 @@ namespace cut_cut_cut
 
 		// 式本体定義 (再定義も可能)
 		bool define_body(std::string body);
+
+		// 定義されている変数の数を返す
+		unsigned int variable_size() const;
+		// インデックス index の変数名を返す (変数識別子含む)
+		const std::string &variable(unsigned int index) const;
 	};
 }
 
