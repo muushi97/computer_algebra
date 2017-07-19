@@ -15,11 +15,14 @@ namespace cut_cut_cut
 		std::vector<unsigned char> m_body;								// 式本体
 		std::list<std::string> m_body_temp;								// 式本体
 
+		// 変数を探す
+		short find_variable(std::string variable_name);
+
 		// 関数名から関数IDを返す
 		unsigned char to_functionID(std::string name);
 		// 関数名から関数の項数を返す
 		unsigned char to_function_term_of_number(std::string name);
-		// 変数名から変数インデックスを返す
+		// 変数名から変数インデックスを返す (一時変数の場合，定義されていなかったら定義する)
 		unsigned char to_variable_index(std::string name);
 		// 文字列から小数を返す
 		double to_decimal(std::string name);

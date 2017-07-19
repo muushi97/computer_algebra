@@ -56,8 +56,8 @@ int main()
 {
 	cut_cut_cut::expression hoge;
 
-	hoge.define_variable({"@a" , "$b" , "%c"});
-	hoge.define_body("3.2i8 +11j-98");
+	hoge.define_variable({"sa" , "vb" , "mc" , "tsd" , "tvd" , "tme"});
+	hoge.define_body("\\add 1i0 \\mul 9i10 sa");
 
 	return 0;
 }

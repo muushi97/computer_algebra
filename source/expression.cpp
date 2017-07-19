@@ -1,11 +1,29 @@
 #include "expression.hpp"
 
+#include <cstdint>
 #include <iostream>
 
 using namespace cut_cut_cut;
 
+namespace
+{
+	unsigned char integer_devide(uint_least64_t &integer)
+	{
+		unsigned char to_conv = integer & 0x000000ff;
+		integer = integer >> 8;
+		return to_conv;
+	}
+}
+
 namespace cut_cut_cut
 {
+	enum term_type : unsigned char
+	{
+		fun,
+		var,
+		con,
+	};
+
 	enum function : unsigned char
 	{
 		non,
@@ -17,11 +35,22 @@ namespace cut_cut_cut
 		pow,
 	};
 
-	union ch_de
+	union in_de
 	{
-		unsigned char integer[4];
+		uint_least64_t integer;
 		double decimal;
 	};
+}
+
+// 変数を探す
+short expression::find_variable(std::string variable_name)
+{
+	for (short i = 0; i < m_variable_list.size(); ++i)
+	{
+		if (m_variable_list[i] == variable_name)
+			return i;
+	}
+	return -1;
 }
 
 // 関数名から関数IDを返す
@@ -68,15 +97,15 @@ unsigned char expression::to_function_term_of_number(std::string name)
 
 	return term_of_number;
 }
-// 変数名から変数インデックスを返す
+// 変数名から変数インデックスを返す (一時変数の場合，定義されていなかったら定義する)
 unsigned char expression::to_variable_index(std::string name)
 {
-	for (unsigned char i = 0; i < m_variable_list.size(); ++i)
-	{
-		if (m_variable_list[i] == name)
-			return i;
-	}
-	return 0;
+	short index = find_variable(name);
+	if (index != -1)
+		return static_cast<unsigned char>(index);
+
+	m_variable_list.push_back(name);
+	return m_variable_list.size() - 1;
 }
 // 文字列から小数を返す
 double expression::to_decimal(std::string name)
@@ -91,15 +120,23 @@ expression::expression()
 }
 
 // 変数定義 (再定義も可能)
-// @a		: スカラー変数 a を定義
-// $a		: ベクトル変数 a を定義
-// %a		: 行列変数 a を定義 (次元は未定義)
-// &a		: スカラー数列 a を定義 ('_' の個数でインデックスの個数も指定可能) (要検討)
+// 変数識別子	: s=スカラー , v=ベクトル , m=行列
+//				: 変数識別子の前に，t を付けた場合，その変数は一時変数とし，数式外からの操作を不可能とする．
+// sa			: スカラー変数 a を定義
+// va			: ベクトル変数 a を定義 (次元は未定義)
+// ma			: 行列変数 a を定義 (次元は未定義)
+// &a			: スカラー数列 a を定義 ('_' の個数でインデックスの個数も指定可能) (要検討)
 bool expression::define_variable(std::initializer_list<std::string> variable_list)
 {
+	char ind;
 	for (auto itr = variable_list.begin(); itr != variable_list.end(); itr++)
 	{
-		if ((*itr)[0] != '@' && (*itr)[0] != '$' && (*itr)[0] != '%')
+		if ((*itr)[0] != 't')
+			ind = 0;
+		else
+			ind = 1;
+
+		if ((*itr)[ind] != 's' && (*itr)[ind] != 'v' && (*itr)[ind] != 'm')
 			return false;
 
 		std::cout << (*itr) << std::endl;
@@ -112,11 +149,11 @@ bool expression::define_variable(std::initializer_list<std::string> variable_lis
 // \hoge[n]			: n個の引数を持つ hoge 演算を行う
 // \sum[3][k]		: インデックスを k とし，n <= k <= m となる範囲で総和計算 (範囲は引数で表す)
 // \pro[3][k]		: インデックスを k とし，n <= k <= m となる範囲で総乗計算 (範囲は引数で表す)
-// @a				: スカラー変数を参照
-// $a				: ベクトル変数を参照
-// $a(k)			: ベクトル変数 a の k 個目の要素を参照 (1 <= k <= N ; Nはベクトル変数の次元)
-// %a				: 行列変数を参照
-// %a(k)(l)			: 行列変数 a の k 行 l 列の要素を参照 (1 <= k , l ; k <= N ; l <= M ; a は N 行 M 列の行列変数)
+// sa				: スカラー変数を参照
+// va				: ベクトル変数を参照
+// va(k)			: ベクトル変数 a の k 個目の要素を参照 (1 <= k <= N ; Nはベクトル変数の次元)
+// ma				: 行列変数を参照
+// ma(k)(l)			: 行列変数 a の k 行 l 列の要素を参照 (1 <= k , l ; k <= N ; l <= M ; a は N 行 M 列の行列変数)
 // &a_k				: 数列の第 k 項を参照 (要検討)
 // &a_k_l			: 数列の第 k 項の第 l 項を参照 (要検討)]
 //
@@ -131,64 +168,85 @@ bool expression::define_body(std::string body)
 		if ((*itr) == ' ')
 			continue;
 
-		// 関数っぽいば・あ・い
-		if ((*itr) == '\\')
-		{
+		{// 関数っぽいば・あ・い
+			if ((*itr) == '\\')
+			{
+				auto itr2 = itr;
+				for (; (itr2 + 1) != body.end(); itr2++)
+				{
+					if (*(itr2 + 1) == ' ')
+					{
+						if (*itr2 != *itr)
+							break;
+						else
+							return false;
+					}
+				}
+				std::cout << static_cast<int>(term_type::fun) << " ";
+				std::cout << static_cast<int>(to_functionID(std::string(itr + 1, itr2 + 1))) << " ";
+				std::cout << static_cast<int>(to_function_term_of_number(std::string(itr + 1, itr2 + 1))) << " ";
+				std::cout << std::endl;
+				itr = itr2;
+				continue;
+			}
+		}
+
+		{// 変数っぽいば・あ・い
 			auto itr2 = itr;
+			if ((*itr2) == 't')
+				itr2++;
+			if ((*itr2) == 's' || (*itr2) == 'v' || (*itr2) == 'm')
+			{
+				for (; (itr2 + 1) != body.end(); itr2++)
+				{
+					if (*(itr2 + 1) == ' ')
+					{
+						if (*itr2 != *itr)
+							break;
+						else
+							return false;
+					}
+				}
+				std::cout << static_cast<int>(term_type::var) << " ";
+				std::cout << static_cast<int>(to_variable_index(std::string(itr, itr2 + 1))) << " ";
+				std::cout << std::endl;
+
+				itr = itr2;
+				continue;
+			}
+		}
+
+		{// 定数っぽいば・あ・い
+			auto itr2 = itr;
+			in_de conv;
 			for (; (itr2 + 1) != body.end(); itr2++)
 			{
 				if (*(itr2 + 1) == ' ')
 				{
-					if (*itr2 != *itr)
+					if (*(itr2 + 1) != *itr)
 						break;
 					else
 						return false;
 				}
-			}
-			std::cout << "fun : " << static_cast<int>(to_functionID(std::string(itr + 1, itr2 + 1))) << " : " << static_cast<int>(to_function_term_of_number(std::string(itr + 1, itr2 + 1))) << std::endl;
-			itr = itr2;
-			continue;
-		}
-
-		// 変数っぽいば・あ・い
-		if ((*itr) == '@' || (*itr) == '$' || (*itr) == '%')
-		{
-			auto itr2 = itr;
-			for (; (itr2 + 1) != body.end(); itr2++)
-			{
-				if (*(itr2 + 1) == ' ')
+				else if (*(itr2 + 1) == 'i' || *(itr2 + 1) == 'j')
 				{
-					if (*itr2 != *itr)
-						break;
-					else
-						return false;
+					std::cout << static_cast<int>(term_type::con) << " ";
+					std::cout << to_decimal(std::string(itr, itr2 + 1)) << " ";
+					conv.decimal = to_decimal(std::string(itr, itr2 + 1));
+					std::cout << conv.integer << " ";
+					for (unsigned int i = 0; i < 8; ++i)
+						std::cout << static_cast<int>(integer_devide(conv.integer)) << " ";
+					itr = itr2 + 2;
 				}
 			}
-			m_body_temp.emplace_back(itr, itr2 + 1);
-			std::cout << "var : " << m_body_temp.back() << std::endl;
+			std::cout << to_decimal(std::string(itr, itr2 + 1)) << " ";
+			conv.decimal = to_decimal(std::string(itr, itr2 + 1));
+			std::cout << conv.integer << " ";
+			for (unsigned int i = 0; i < 8; ++i)
+				std::cout << static_cast<int>(integer_devide(conv.integer)) << " ";
+			std::cout << std::endl;
 			itr = itr2;
-			continue;
 		}
-
-		// 定数っぽいば・あ・い
-		auto itr2 = itr;
-		for (; (itr2 + 1) != body.end(); itr2++)
-		{
-			if (*(itr2 + 1) == ' ')
-			{
-				if (*(itr2 + 1) != *itr)
-					break;
-				else
-					return false;
-			}
-			else if (*(itr2 + 1) == 'i' || *(itr2 + 1) == 'j')
-			{
-				std::cout << "con : " << to_decimal(std::string(itr, itr2 + 1)) << std::endl;
-				itr = itr2 + 2;
-			}
-		}
-		std::cout << "con : " << to_decimal(std::string(itr, itr2 + 1)) << std::endl;
-		itr = itr2;
 	}
 	return true;
 }
