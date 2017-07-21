@@ -98,9 +98,7 @@ double calculator::to_decimal(std::string name)
 // 数式を計算用に変換
 void calculator::convert_expression()
 {
-	auto &expr = m_body->m_body;
-
-	for (auto itr = expr.begin(); itr != expr.end(); itr++)
+	for (auto itr = m_body->m_body.begin(); itr != m_body->m_body.end(); itr++)
 	{
 		{// 関数のば・あ・い
 			if ((*itr)[0] == '\\')
@@ -109,8 +107,8 @@ void calculator::convert_expression()
 				std::cout << static_cast<int>(to_functionID(*itr)) << " ";
 				std::cout << static_cast<int>(to_function_term_of_number(*itr)) << " ";
 				std::cout << std::endl;
+				continue;
 			}
-			continue;
 		}
 
 		{// 変数のば・あ・い
@@ -119,8 +117,8 @@ void calculator::convert_expression()
 				std::cout << static_cast<int>(term_type::var) << " ";
 				std::cout << static_cast<int>(m_body->variable_index(*itr)) << " ";
 				std::cout << std::endl;
+				continue;
 			}
-			continue;
 		}
 
 		{// 定数のば・あ・い
@@ -167,4 +165,6 @@ void calculator::set_expression(const expression &obj)
 	unsigned int size = m_body->variable_size();
 
 	m_variable.resize(size);
+
+	convert_expression();
 }
