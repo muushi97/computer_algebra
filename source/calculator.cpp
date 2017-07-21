@@ -98,7 +98,7 @@ double calculator::to_decimal(std::string name)
 // 数式を計算用に変換
 void calculator::convert_expression()
 {
-	std::list<std::string> expr;
+	auto &expr = m_body->m_body;
 
 	for (auto itr = expr.begin(); itr != expr.end(); itr++)
 	{
@@ -153,6 +153,8 @@ void calculator::convert_expression()
 }
 
 // コンストラクタ
+calculator::calculator()
+{ }
 calculator::calculator(const expression &obj)
 {
 	set_expression(obj);

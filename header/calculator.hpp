@@ -30,6 +30,7 @@ namespace cut_cut_cut
 
 	public:
 		// コンストラクタ
+		calculator();
 		calculator(const expression &obj);
 
 		// 数式をセットする

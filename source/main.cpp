@@ -5,6 +5,7 @@
 #include <string>
 
 #include "expression.hpp"
+#include "calculator.hpp"
 
 namespace cut_cut_cut
 {
@@ -55,9 +56,15 @@ namespace cut_cut_cut
 int main()
 {
 	cut_cut_cut::expression hoge;
+	cut_cut_cut::calculator cal(hoge);
 
+	std::cout << "define variable" << std::endl;
 	hoge.define_variable({"sa" , "vb" , "mc" , "tsd" , "tvd" , "tme"});
+	std::cout << std::endl;
+
+	std::cout << "define body" << std::endl;
 	hoge.define_body("\\add 1i0 \\mul 9i10 sa");
+	std::cout << std::endl;
 
 	return 0;
 }
