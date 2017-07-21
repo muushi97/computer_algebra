@@ -5,114 +5,11 @@
 
 using namespace cut_cut_cut;
 
-namespace
+// 変数を追加する
+void expression::add_veriable(std::string name)
 {
-	unsigned char integer_devide(uint_least64_t &integer)
-	{
-		unsigned char to_conv = integer & 0x000000ff;
-		integer = integer >> 8;
-		return to_conv;
-	}
-}
-
-namespace cut_cut_cut
-{
-	enum term_type : unsigned char
-	{
-		fun,
-		var,
-		con,
-	};
-
-	enum function : unsigned char
-	{
-		non,
-		add,
-		sub,
-		mul,
-		div,
-		frac,
-		pow,
-	};
-
-	union in_de
-	{
-		uint_least64_t integer;
-		double decimal;
-	};
-}
-
-// 変数を探す
-short expression::find_variable(std::string variable_name)
-{
-	for (short i = 0; i < m_variable_list.size(); ++i)
-	{
-		if (m_variable_list[i] == variable_name)
-			return i;
-	}
-	return -1;
-}
-
-// 関数名から関数IDを返す
-unsigned char expression::to_functionID(std::string name)
-{
-	cut_cut_cut::function ID;
-
-	if (name == "add")
-		ID = cut_cut_cut::function::add;
-	else if (name == "sub")
-		ID = cut_cut_cut::function::sub;
-	else if (name == "mul")
-		ID = cut_cut_cut::function::mul;
-	else if (name == "div")
-		ID = cut_cut_cut::function::div;
-	else if (name == "frac")
-		ID = cut_cut_cut::function::frac;
-	else if (name == "pow")
-		ID = cut_cut_cut::function::pow;
-	else
-		ID = cut_cut_cut::function::non;
-
-	return static_cast<unsigned char>(ID);
-}
-// 関数名から関数の項数を返す
-unsigned char expression::to_function_term_of_number(std::string name)
-{
-	unsigned char term_of_number;
-
-	if (name == "add")
-		term_of_number = 2;
-	else if (name == "sub")
-		term_of_number = 2;
-	else if (name == "mul")
-		term_of_number = 2;
-	else if (name == "div")
-		term_of_number = 2;
-	else if (name == "frac")
-		term_of_number = 2;
-	else if (name == "pow")
-		term_of_number = 2;
-	else
-		term_of_number = 0;
-
-	return term_of_number;
-}
-// 変数名から変数インデックスを返す (一時変数の場合，定義されていなかったら定義する)
-unsigned char expression::to_variable_index(std::string name)
-{
-	short index = find_variable(name);
-	if (index != -1)
-		return static_cast<unsigned char>(index);
-
 	m_variable_list.push_back(name);
-	return m_variable_list.size() - 1;
 }
-// 文字列から小数を返す
-double expression::to_decimal(std::string name)
-{
-	return std::stod(name);
-}
-
 
 // コンストラクタ
 expression::expression()
@@ -216,7 +113,6 @@ bool expression::define_body(std::string body)
 
 		{// 定数っぽいば・あ・い
 			auto itr2 = itr;
-			in_de conv;
 			for (; (itr2 + 1) != body.end(); itr2++)
 			{
 				if (*(itr2 + 1) == ' ')
@@ -243,7 +139,17 @@ unsigned int expression::variable_size() const
 	return m_variable_list.size();
 }
 // インデックス index の変数名を返す (変数識別子含む)
-const std::string &expression::variable(unsigned int index) const
+const std::string &expression::variable_name(unsigned int index) const
 {
 	return m_variable_list[index];
+}
+// 変数を探して，見つかった場合，インデックスを返す．(見つからなかった場合 -1 を返す)
+int expression::variable_index(std::string variable_name) const
+{
+	for (int i = 0; i < m_variable_list.size(); ++i)
+	{
+		if (m_variable_list[i] == variable_name)
+			return i;
+	}
+	return -1;
 }
