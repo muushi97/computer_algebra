@@ -4,7 +4,7 @@
 #include <vector>
 #include <complex>
 
-namespace cut_cut_cut
+namespace little_mzk
 {
 	class matrix
 	{
@@ -21,6 +21,9 @@ namespace cut_cut_cut
 		matrix();
 		matrix(unsigned int row, unsigned int column);
 
+		// 代入演算子
+		const matrix &operator = (const matrix &obj);
+
 		// 行数を変更
 		void change_row(unsigned int row);
 		// 列数を変更
@@ -30,6 +33,7 @@ namespace cut_cut_cut
 
 		// 値を参照する
 		std::complex<double> &operator () (unsigned int row, unsigned int column);
+		const std::complex<double> &operator () (unsigned int row, unsigned int column) const;
 	};
 }
 

@@ -6,6 +6,7 @@
 
 #include "expression.hpp"
 #include "calculator.hpp"
+#include "matrix.hpp"
 
 namespace cut_cut_cut
 {
