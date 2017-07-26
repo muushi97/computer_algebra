@@ -4,6 +4,7 @@
 #include <vector>
 #include <complex>
 
+#include "value_interface.hpp"
 //#include "matrix.hpp"
 
 namespace cut_cut_cut
@@ -14,7 +15,7 @@ namespace cut_cut_cut
 	{
 	private:
 		const expression *m_body;						// 数式本体への参照
-		std::vector<double> m_variable;					// 変数の値
+		std::vector<value_interface *> m_variable;					// 変数の値
 
 		std::vector<unsigned char> m_bin;				// 計算形式の数式
 
