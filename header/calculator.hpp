@@ -36,6 +36,9 @@ namespace cut_cut_cut
 
 		// 数式をセットする
 		void set_expression(const expression &obj);
+
+		// 計算する
+		std::complex<double> calculate();
 	};
 }
 

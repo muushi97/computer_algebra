@@ -168,3 +168,25 @@ void calculator::set_expression(const expression &obj)
 
 	convert_expression();
 }
+
+// 計算する
+std::complex<double> calculator::calculate()
+{
+	for (auto itr = m_bin.begin(); itr != m_bin.end(); itr++)
+	{
+		switch (*itr)
+		{
+		case static_cast<unsigned char>(term_type::fun):
+			break;
+
+		case static_cast<unsigned char>(term_type::var):
+			break;
+
+		case static_cast<unsigned char>(term_type::con):
+			break;
+
+		default:
+			break;
+		}
+	}
+}
