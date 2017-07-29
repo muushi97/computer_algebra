@@ -28,8 +28,12 @@ const std::complex<double> &scalar_value::ref(unsigned int i, unsigned int j) co
 {
 	return m_value;
 }
-// 値の種類を返す (cut_cut_cut::value_type::scalar を返す)
-value_type scalar_value::type() const
+// 行と列を返す (どっちも 0 を返す)
+unsigned int scalar_value::row() const
 {
-	return cut_cut_cut::value_type::scalar;
+	return 0;
+}
+unsigned int scalar_value::column() const
+{
+	return 0;
 }

@@ -26,6 +26,9 @@ namespace little_mzk
 		// 次元を変更
 		void change_demention(unsigned int demention);
 
+		// 次元
+		unsigned int demention() const;
+
 		// 値を参照する
 		std::complex<double> &operator () (unsigned int i);
 		const std::complex<double> &operator () (unsigned int i) const;

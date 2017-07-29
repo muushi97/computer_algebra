@@ -23,8 +23,9 @@ namespace cut_cut_cut
 		// 値を参照 ((i+1)行 (j+1)列目の要素を参照)
 		virtual std::complex<double> &ref(unsigned int i, unsigned int j);
 		virtual const std::complex<double> &ref(unsigned int i, unsigned int j) const;
-		// 値の種類を返す (cut_cut_cut::value_type::matirx を返す)
-		virtual value_type type() const;
+		// 行と列を返す (それぞれ 行数 列数 を返す)
+		virtual unsigned int row() const;
+		virtual unsigned int column() const;
 	};
 }
 

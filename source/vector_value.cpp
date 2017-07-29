@@ -25,8 +25,12 @@ const std::complex<double> &vector_value::ref(unsigned int i, unsigned int j) co
 {
 	return m_value(i);
 }
-// 値の種類を返す (cut_cut_cut::value_type::vector を返す)
-value_type vector_value::type() const
+// 行と列を返す (行数は 次元，列数は 0 を返す)
+unsigned int vector_value::row() const
 {
-	return cut_cut_cut::value_type::matrix;
+	return m_value.demention();
+}
+unsigned int vector_value::column() const
+{
+	return 0;
 }

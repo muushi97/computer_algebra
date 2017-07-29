@@ -31,6 +31,11 @@ namespace little_mzk
 		// 行列の大きさを変更
 		void change_size(unsigned int row, unsigned int column);
 
+		// 行数
+		unsigned int row() const;
+		// 列数
+		unsigned int column() const;
+
 		// 値を参照する
 		std::complex<double> &operator () (unsigned int row, unsigned int column);
 		const std::complex<double> &operator () (unsigned int row, unsigned int column) const;

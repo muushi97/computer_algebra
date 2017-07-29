@@ -29,6 +29,12 @@ void vector::change_demention(unsigned int demention)
 	m_demention = demention;
 }
 
+// 次元
+unsigned int vector::demention() const
+{
+	return m_demention;
+}
+
 // 値を参照する
 // 列数 * row + column
 std::complex<double> &vector::operator () (unsigned int i)
