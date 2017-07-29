@@ -9,7 +9,7 @@ void matrix::update_array()
 }
 
 // コンストラクタ
-matrix::matrix() : matrix(0, 0)
+matrix::matrix() : matrix(1, 1)
 { }
 matrix::matrix(unsigned int row, unsigned int column)
 {

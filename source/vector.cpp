@@ -9,7 +9,7 @@ void vector::update_array()
 }
 
 // コンストラクタ
-vector::vector() : vector(0)
+vector::vector() : vector(1)
 { }
 vector::vector(unsigned int demention)
 {
