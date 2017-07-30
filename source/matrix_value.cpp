@@ -26,11 +26,11 @@ const std::complex<double> &matrix_value::ref(unsigned int i, unsigned int j) co
 	return m_value(i , j);
 }
 // 行と列を返す (それぞれ 行数 列数 を返す)
-unsigned int matrix_value::row() const
+int matrix_value::row() const
 {
 	return m_value.row();
 }
-unsigned int matrix_value::column() const
+int matrix_value::column() const
 {
 	return m_value.column();
 }

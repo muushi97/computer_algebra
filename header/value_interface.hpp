@@ -12,8 +12,8 @@ namespace cut_cut_cut
 		virtual std::complex<double> &ref(unsigned int i, unsigned int j) = 0;
 		virtual const std::complex<double> &ref(unsigned int i, unsigned int j) const = 0;
 		// 行と列を返す
-		virtual unsigned int row() const = 0;
-		virtual unsigned int column() const = 0;
+		virtual int row() const = 0;
+		virtual int column() const = 0;
 	};
 }
 

@@ -29,11 +29,11 @@ const std::complex<double> &scalar_value::ref(unsigned int i, unsigned int j) co
 	return m_value;
 }
 // 行と列を返す (どっちも 0 を返す)
-unsigned int scalar_value::row() const
+int scalar_value::row() const
 {
-	return 0;
+	return -1;
 }
-unsigned int scalar_value::column() const
+int scalar_value::column() const
 {
-	return 0;
+	return -1;
 }

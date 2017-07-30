@@ -20,9 +20,9 @@ namespace cut_cut_cut
 		// 値を参照 (i , j によらず常に定数を返す)
 		virtual std::complex<double> &ref(unsigned int i, unsigned int j);
 		virtual const std::complex<double> &ref(unsigned int i, unsigned int j) const;
-		// 行と列を返す (どっちも 0 を返す)
-		virtual unsigned int row() const;
-		virtual unsigned int column() const;
+		// 行と列を返す (どっちも -1 を返す)
+		virtual int row() const;
+		virtual int column() const;
 	};
 }
 

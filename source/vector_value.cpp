@@ -25,12 +25,12 @@ const std::complex<double> &vector_value::ref(unsigned int i, unsigned int j) co
 {
 	return m_value(i);
 }
-// 行と列を返す (行数は 次元，列数は 0 を返す)
-unsigned int vector_value::row() const
+// 行と列を返す (行数は 次元，列数は -1 を返す)
+int vector_value::row() const
 {
 	return m_value.demention();
 }
-unsigned int vector_value::column() const
+int vector_value::column() const
 {
-	return 0;
+	return -1;
 }
