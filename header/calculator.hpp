@@ -2,7 +2,12 @@
 #define IG_CALCULATOR_HPP
 
 #include <vector>
+#include <list>
 #include <complex>
+#include <memory>
+#include <utility>
+
+#include "expression.hpp"
 
 #include "value_interface.hpp"
 //#include "matrix.hpp"
@@ -14,28 +19,25 @@ namespace cut_cut_cut
 	class calculator
 	{
 	private:
-		const expression *m_body;						// 数式本体への参照
-		std::vector<value_interface *> m_variable;					// 変数の値
+		expression *m_body;						// 数式本体への参照
+		std::vector<std::unique_ptr<value_interface>> m_variable;					// 変数の値
 
-		std::vector<unsigned char> m_bin;				// 計算形式の数式
+		// 処理を移譲する
+		std::unique_ptr<value_interface> calulate_chain(decltype(m_body->m_body)::iterator i);
 
-		// 関数名から関数IDを返す
-		unsigned char to_functionID(std::string name);
-		// 関数名から関数の項数を返す
-		unsigned char to_function_term_of_number(std::string name);
-		// 文字列から小数を返す
-		double to_decimal(std::string name);
+		// 変数名から値を取得する
+		value_interface *get_value(decltype(m_body->m_body)::iterator i);
 
-		// 数式を計算用に変換
-		void convert_expression();
+		// 関数群 decltype(m_body->m_body)
+		std::unique_ptr<value_interface> add(decltype(m_body->m_body)::iterator i);	// 加算
 
 	public:
 		// コンストラクタ
 		calculator();
-		calculator(const expression &obj);
+		calculator(expression &obj);
 
 		// 数式をセットする
-		void set_expression(const expression &obj);
+		void set_expression(expression &obj);
 
 		// 計算する
 		std::complex<double> calculate();

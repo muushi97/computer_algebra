@@ -2,191 +2,153 @@
 
 #include <list>
 #include <iostream>
+#include <array>
 
 #include "expression.hpp"
 
-using namespace cut_cut_cut;
+#include "scalar_value.hpp"
+#include "vector_value.hpp"
+#include "matrix_value.hpp"
 
-namespace
-{
-	unsigned char integer_devide(uint_least64_t &integer)
-	{
-		unsigned char to_conv = integer & 0x000000ff;
-		integer = integer >> 8;
-		return to_conv;
-	}
-}
+using namespace cut_cut_cut;
 
 namespace cut_cut_cut
 {
-	enum term_type : unsigned char
+	std::unique_ptr<value_interface> generete_value(std::string &data)
 	{
-		fun,
-		var,
-		con,
-	};
-
-	enum function : unsigned char
-	{
-		non,
-		add,
-		sub,
-		mul,
-		div,
-		frac,
-		pow,
-	};
-
-	union in_de
-	{
-		uint_least64_t integer;
-		double decimal;
-	};
-}
-
-// 関数名から関数IDを返す
-unsigned char calculator::to_functionID(std::string name)
-{
-	cut_cut_cut::function ID;
-
-	if (name == "add")
-		ID = cut_cut_cut::function::add;
-	else if (name == "sub")
-		ID = cut_cut_cut::function::sub;
-	else if (name == "mul")
-		ID = cut_cut_cut::function::mul;
-	else if (name == "div")
-		ID = cut_cut_cut::function::div;
-	else if (name == "frac")
-		ID = cut_cut_cut::function::frac;
-	else if (name == "pow")
-		ID = cut_cut_cut::function::pow;
-	else
-		ID = cut_cut_cut::function::non;
-
-	return static_cast<unsigned char>(ID);
-}
-// 関数名から関数の項数を返す
-unsigned char calculator::to_function_term_of_number(std::string name)
-{
-	unsigned char term_of_number;
-
-	if (name == "add")
-		term_of_number = 2;
-	else if (name == "sub")
-		term_of_number = 2;
-	else if (name == "mul")
-		term_of_number = 2;
-	else if (name == "div")
-		term_of_number = 2;
-	else if (name == "frac")
-		term_of_number = 2;
-	else if (name == "pow")
-		term_of_number = 2;
-	else
-		term_of_number = 0;
-
-	return term_of_number;
-}
-// 文字列から小数を返す
-double calculator::to_decimal(std::string name)
-{
-	return std::stod(name);
-}
-
-
-// 数式を計算用に変換
-void calculator::convert_expression()
-{
-	for (auto itr = m_body->m_body.begin(); itr != m_body->m_body.end(); itr++)
-	{
-		{// 関数のば・あ・い
-			if ((*itr)[0] == '\\')
+		double real, imaginary;
+		auto itr = data.begin();
+		for (; itr != data.end(); itr++)
+		{
+			if (*itr == 'i')
 			{
-				std::cout << static_cast<int>(term_type::fun) << " ";
-				std::cout << static_cast<int>(to_functionID(*itr)) << " ";
-				std::cout << static_cast<int>(to_function_term_of_number(*itr)) << " ";
-				std::cout << std::endl;
-				continue;
+				real = std::stod(std::string(data.begin(), itr));
+				itr++;
+				break;
 			}
 		}
+		imaginary = std::stod(std::string(itr, data.end()));
 
-		{// 変数のば・あ・い
-			if ((*itr)[0] == 't' || (*itr)[0] == 's' || (*itr)[0] == 'v' || (*itr)[0] == 'm')
-			{
-				std::cout << static_cast<int>(term_type::var) << " ";
-				std::cout << static_cast<int>(m_body->variable_index(*itr)) << " ";
-				std::cout << std::endl;
-				continue;
-			}
-		}
-
-		{// 定数のば・あ・い
-			auto itr_s = (*itr).begin();
-			auto itr_t = itr_s;
-			in_de conv;
-			for (; (itr_t + 1) != (*itr).end(); itr_t++)
-			{
-				if (*(itr_t + 1) == 'i' || *(itr_t + 1) == 'j')
-				{
-					std::cout << static_cast<int>(term_type::con) << " ";
-					std::cout << to_decimal(std::string(itr_s, itr_t + 1)) << " ";
-					conv.decimal = to_decimal(std::string(itr_s, itr_t + 1));
-					std::cout << conv.integer << " ";
-					for (unsigned int i = 0; i < 8; ++i)
-						std::cout << static_cast<int>(integer_devide(conv.integer)) << " ";
-					itr_s = itr_t + 2;
-					break;
-				}
-			}
-			std::cout << to_decimal(std::string(itr_s, (*itr).end())) << " ";
-			conv.decimal = to_decimal(std::string(itr_s, (*itr).end()));
-			std::cout << conv.integer << " ";
-			for (unsigned int i = 0; i < 8; ++i)
-				std::cout << static_cast<int>(integer_devide(conv.integer)) << " ";
-			std::cout << std::endl;
-			itr_s = itr_t;
-		}
+		return std::unique_ptr<value_interface>(new scalar_value(real, imaginary));
 	}
+}
+
+// 処理を移譲する
+std::unique_ptr<value_interface> calculator::calulate_chain(decltype(m_body->m_body)::iterator i)
+{
+	auto function_name = i;
+	i++;
+
+	if (*function_name == "\\add") return add(i);
+	else if (*function_name == "\\sub") return add(i);
+}
+
+// 変数名から値を取得する
+value_interface *calculator::get_value(decltype(m_body->m_body)::iterator i)
+{
+	int index = m_body->variable_index(*i);
+	if (index == -1)
+		return nullptr;
+
+	return m_variable[index].get();
+}
+
+template <typename T>
+class fool_ptr
+{
+private:
+	bool m_flag;
+	T *m_pointer;
+
+public:
+	// コンストラクタ
+	fool_ptr()
+	{
+		m_pointer = nullptr;
+	}
+
+	void set(T *pointer, bool flag)
+	{
+		m_flag = flag;
+		m_pointer = pointer;
+	}
+
+	T *get()
+	{
+		return m_pointer;
+	}
+
+	T *reset(T *pointer, bool flag)
+	{
+		T *past = m_pointer;
+		m_flag = flag;
+		m_pointer = pointer;
+		return past;
+	}
+
+	T *operator -> () const
+	{
+		return m_pointer;
+	}
+
+	~fool_ptr()
+	{
+		if (m_flag && m_pointer != nullptr)
+			delete m_pointer;
+	}
+};
+// 関数群
+std::unique_ptr<value_interface> calculator::add(decltype(m_body->m_body)::iterator i)	// 加算
+{
+	unsigned int counter = 0;
+	std::array<fool_ptr<value_interface> , 2> argument;
+
+	auto itr = i;
+	//std::unique_ptr<value_interface> value;
+	for (; itr != m_body->m_body.end(); itr++)
+	{
+		// 値を取得して保持
+		if ((*itr)[0] == '\\')
+			argument[counter].set(calulate_chain(itr).release(), true);
+		else if ((*itr)[0] == 's' || (*itr)[0] == 'v' || (*itr)[0] == 'm' || (*itr)[0] == 't')
+			argument[counter].set(get_value(itr), false);
+		else
+			argument[counter].set(generete_value(*itr).release(), true);
+
+		std::cout << counter << argument[counter]->ref(0, 0) << std::endl;
+		counter++;
+
+		// いっぱいいっぱい になったら計算して吐く
+		if (counter >= argument.size())
+			break;
+	}
+	std::complex<double> temp = argument[0]->ref(0, 0) + argument[1]->ref(0, 0);
+
+	return std::unique_ptr<value_interface>(new scalar_value(temp));
 }
 
 // コンストラクタ
 calculator::calculator()
 { }
-calculator::calculator(const expression &obj)
+calculator::calculator(expression &obj)
 {
 	set_expression(obj);
 }
 
 // 数式をセットする
-void calculator::set_expression(const expression &obj)
+void calculator::set_expression(expression &obj)
 {
 	m_body = &obj;
 	unsigned int size = m_body->variable_size();
 
 	m_variable.resize(size);
-
-	convert_expression();
 }
 
 // 計算する
 std::complex<double> calculator::calculate()
 {
-	for (auto itr = m_bin.begin(); itr != m_bin.end(); itr++)
-	{
-		switch (*itr)
-		{
-		case static_cast<unsigned char>(term_type::fun):
-			break;
+	std::unique_ptr<value_interface> fuga;
 
-		case static_cast<unsigned char>(term_type::var):
-			break;
-
-		case static_cast<unsigned char>(term_type::con):
-			break;
-
-		default:
-			break;
-		}
-	}
+	fuga = calulate_chain(m_body->m_body.begin());
+	std::cout << fuga->ref(0, 0) << std::endl;
 }
