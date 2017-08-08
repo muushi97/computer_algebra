@@ -5,7 +5,7 @@ using namespace cut_cut_cut;
 // コンストラクタ
 vector_value::vector_value()
 {
-	m_value.change_demention(1);
+	m_value.change_dimension(1);
 }
 vector_value::vector_value(const little_mzk::vector &value)
 {
@@ -28,7 +28,7 @@ const std::complex<double> &vector_value::ref(unsigned int i, unsigned int j) co
 // 行と列を返す (行数は 次元，列数は -1 を返す)
 int vector_value::row() const
 {
-	return m_value.demention();
+	return m_value.dimension();
 }
 int vector_value::column() const
 {
