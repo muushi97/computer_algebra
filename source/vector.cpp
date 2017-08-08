@@ -27,6 +27,7 @@ const vector &vector::operator = (const vector &obj)
 void vector::change_demention(unsigned int demention)
 {
 	m_demention = demention;
+	update_array();
 }
 
 // 次元
