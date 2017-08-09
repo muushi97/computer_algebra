@@ -59,9 +59,9 @@ unsigned int matrix::column() const
 // 列数 * row + column
 std::complex<double> &matrix::operator () (unsigned int row, unsigned int column)
 {
-	return m_value[m_row * row + column];
+	return m_value[m_column * row + column];
 }
 const std::complex<double> &matrix::operator () (unsigned int row, unsigned int column) const
 {
-	return m_value[m_row * row + column];
+	return m_value[m_column * row + column];
 }
