@@ -1,5 +1,5 @@
-#ifndef IG_MATRIX_VALUE_HPP
-#define IG_MATRIX_VALUE_HPP
+#ifndef IG_VECTOR_VALUE_HPP
+#define IG_VECTOR_VALUE_HPP
 
 #include <vector>
 #include <complex>
