@@ -15,11 +15,15 @@ namespace momiage
 		void_ptr();
 		void_ptr(const void_ptr&) = delete;
 		void_ptr& operator = (const void_ptr&) = delete;
+		void_ptr(void_ptr &obj);
+		void operator = (void_ptr &obj);
+
 
 		void *release();
-		template <typename T> void reset(T *pointer);
-		void reset();
+		void clear();
 
+		template <typename T>
+		void set(T *pointer);
 		void *get();
 
 		~void_ptr();
@@ -27,7 +31,7 @@ namespace momiage
 }
 
 template <typename T>
-void momiage::void_ptr::reset(T *pointer)
+void momiage::void_ptr::set(T *pointer)
 {
 	if (m_pointer != nullptr)
 		deleter(m_pointer);

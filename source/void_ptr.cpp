@@ -6,6 +6,18 @@ void_ptr::void_ptr()
 {
 	m_pointer = nullptr;
 }
+void_ptr::void_ptr(void_ptr &obj)
+{
+	m_pointer = obj.m_pointer;
+	deleter = obj.deleter;
+	obj.m_pointer = nullptr;
+}
+void void_ptr::operator = (void_ptr &obj)
+{
+	m_pointer = obj.m_pointer;
+	deleter = obj.deleter;
+	obj.m_pointer = nullptr;
+}
 
 void *void_ptr::release()
 {
@@ -13,7 +25,7 @@ void *void_ptr::release()
 	m_pointer = nullptr;
 	return p;
 }
-void void_ptr::reset()
+void void_ptr::clear()
 {
 	if (m_pointer != nullptr)
 		deleter(m_pointer);
